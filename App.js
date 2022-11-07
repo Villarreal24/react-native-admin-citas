@@ -11,17 +11,22 @@ import {
   Button,
   Pressable,
   Modal,
+  FlatList
 } from 'react-native';
 import { Formulario } from './src/components/Formulario';
+import Patient from './src/components/Patient';
 
 const App = () => {
 
   // Hooks
-  const [ modalvisible, setModalVisible ] = useState
-  (false)
+  const [modalvisible, setModalVisible] = useState(false)
+  const [patients, setPatients] = useState([])
+  const [patient, setPatient] = useState({})
 
-  const nuevaCitaHandler = () => {
-    console.log('Apachurrado');
+  const patientEdit = id => {
+    const patientEdit = patients.filter(patient => patient.id === id)
+
+    console.log(patientEdit[0])
   }
 
   return (
@@ -32,14 +37,34 @@ const App = () => {
 
       <Pressable
         style={styles.btnNuevaCita}
-        onPress={() => setModalVisible(true) }
+        onPress={() => setModalVisible(true)}
       >
         <Text style={styles.btnTextNuevaCita}>Nueva cita</Text>
       </Pressable>
 
-        <Formulario
-          modalvisible={modalvisible}
-        />
+      {patients.length === 0 ? <Text style={styles.noPatients}>No hay pacientes</Text> :
+        <FlatList
+          style={styles.list}
+          data={patients}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <Patient
+                item={item}
+                setModalVisible={setModalVisible}
+                patientEdit={patientEdit}
+              />
+            )
+          }}
+        />}
+
+      <Formulario
+        modalvisible={modalvisible}
+        setModalVisible={setModalVisible}
+        patients={patients}
+        setPatients={setPatients}
+        patient={patient}
+      />
     </SafeAreaView>
   );
 };
@@ -63,7 +88,7 @@ const styles = StyleSheet.create({
   btnNuevaCita: {
     backgroundColor: '#6D28D9',
     padding: 15,
-    marginTop: 20,
+    marginTop: 30,
     marginHorizontal: 20,
     borderRadius: 10
   },
@@ -74,6 +99,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textTransform: 'uppercase',
   },
+  noPatients: {
+    marginTop: 40,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '800'
+  },
+  list: {
+    marginTop: 50,
+    marginHorizontal: 20
+  }
 })
 
 export default App;
