@@ -14,8 +14,13 @@ import {
 } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 
-export const Formulario = ({ modalvisible, setModalVisible, patients, 
-    setPatients, patient: patientObj }) => {
+export const Formulario = ({
+    modalvisible,
+    setModalVisible,
+    patients,
+    setPatients,
+    patient: patientObj,
+    setPatient: setPatientApp }) => {
 
     const [id, setId] = useState('')
     const [patient, setPatient] = useState('')
@@ -57,9 +62,23 @@ export const Formulario = ({ modalvisible, setModalVisible, patients,
             symptom
         }
 
-        setPatients([...patients, newPatient])
-        setModalVisible(!modalvisible)
+        // Revizar si es nuevo o edición
+        if (id) {
+            // Editando
+            newPatient.id = id
 
+            const patientUpdated = patients.map(patientState =>
+                patientState.id === newPatient.id ? newPatient : patientState)
+
+            setPatients(patientUpdated)
+            // setPatientApp({})
+        } else {
+            // Nuevo registro
+            newPatient.id = Date.now()
+            setPatients([...patients, newPatient])
+        }
+
+        setModalVisible(!modalvisible)
         setPatient('')
         setOwner('')
         setEmail('')
@@ -81,7 +100,16 @@ export const Formulario = ({ modalvisible, setModalVisible, patients,
 
                     <Pressable
                         style={styles.btnCancelar}
-                        onPress={() => setModalVisible(!modalvisible)}>
+                        onPress={() => {
+                            setModalVisible(!modalvisible)
+                            setPatientApp({})
+                            setPatient('')
+                            setOwner('')
+                            setEmail('')
+                            setCellphone('')
+                            setDate(new Date())
+                            setSymptom('')
+                        }}>
                         <Text style={styles.btnCancelarTexto}>Cancelar</Text>
                     </Pressable>
 

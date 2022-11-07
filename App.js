@@ -26,7 +26,7 @@ const App = () => {
   const patientEdit = id => {
     const patientEdit = patients.filter(patient => patient.id === id)
 
-    console.log(patientEdit[0])
+    setPatient(patientEdit[0])
   }
 
   return (
@@ -64,6 +64,7 @@ const App = () => {
         patients={patients}
         setPatients={setPatients}
         patient={patient}
+        setPatient={setPatient}
       />
     </SafeAreaView>
   );
