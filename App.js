@@ -11,10 +11,12 @@ import {
   Button,
   Pressable,
   Modal,
-  FlatList
+  FlatList,
+  Alert
 } from 'react-native';
 import { Formulario } from './src/components/Formulario';
 import Patient from './src/components/Patient';
+import InfoPatient from './src/components/InfoPatient';
 
 const App = () => {
 
@@ -22,6 +24,7 @@ const App = () => {
   const [modalvisible, setModalVisible] = useState(false)
   const [patients, setPatients] = useState([])
   const [patient, setPatient] = useState({})
+  const [modalPatient, setModalPatient] = useState(false)
 
   const patientEdit = id => {
     const patientEdit = patients.filter(patient => patient.id === id)
@@ -29,6 +32,27 @@ const App = () => {
     setPatient(patientEdit[0])
   }
 
+  const patientDelete = id => {
+    Alert.alert(
+      'Deseas eliminar este paciente?',
+      'Estos cambios no se podran revertir.',
+      [
+        { text: 'Cancelar' },
+        {
+          text: 'Si, eliminar', onPress: () => {
+            const patientsUpdates = patients.filter(
+              patientsState => patientsState.id !== id)
+
+            setPatients(patientsUpdates)
+          }
+        }
+      ]
+    )
+  }
+
+  const closeModal = () => {
+    setModalVisible(false)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Administrador de citas {''}
@@ -52,20 +76,36 @@ const App = () => {
               <Patient
                 item={item}
                 setModalVisible={setModalVisible}
+                setPatient={setPatient}
                 patientEdit={patientEdit}
+                patientDelete={patientDelete}
+                setModalPatient={setModalPatient}
               />
             )
           }}
         />}
 
-      <Formulario
-        modalvisible={modalvisible}
-        setModalVisible={setModalVisible}
-        patients={patients}
-        setPatients={setPatients}
-        patient={patient}
-        setPatient={setPatient}
-      />
+
+      {modalvisible && (
+        <Formulario
+          closeModal={closeModal}
+          patients={patients}
+          setPatients={setPatients}
+          patient={patient}
+          setPatient={setPatient}
+        />
+      )}
+
+      <Modal
+        visible={modalPatient}
+        animationType='fade'
+      >
+        <InfoPatient
+          patient={patient}
+          setModalPatient={setModalPatient}
+          setPatient={setPatient}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -107,8 +147,8 @@ const styles = StyleSheet.create({
     fontWeight: '800'
   },
   list: {
-    marginTop: 50,
-    marginHorizontal: 20
+    marginTop: 30,
+    marginHorizontal: 20,
   }
 })
 

@@ -16,7 +16,7 @@ import DatePicker from 'react-native-date-picker'
 
 export const Formulario = ({
     modalvisible,
-    setModalVisible,
+    closeModal,
     patients,
     setPatients,
     patient: patientObj,
@@ -40,7 +40,7 @@ export const Formulario = ({
             setDate(patientObj.date)
             setSymptom(patientObj.symptom)
         }
-    }, [])
+    }, [patientObj])
 
     // Validación de formulario
     const handlerCita = () => {
@@ -71,14 +71,14 @@ export const Formulario = ({
                 patientState.id === newPatient.id ? newPatient : patientState)
 
             setPatients(patientUpdated)
-            // setPatientApp({})
+            setPatientApp({})
         } else {
             // Nuevo registro
             newPatient.id = Date.now()
             setPatients([...patients, newPatient])
         }
 
-        setModalVisible(!modalvisible)
+        closeModal()
         setPatient('')
         setOwner('')
         setEmail('')
@@ -101,7 +101,7 @@ export const Formulario = ({
                     <Pressable
                         style={styles.btnCancelar}
                         onPress={() => {
-                            setModalVisible(!modalvisible)
+                            closeModal()
                             setPatientApp({})
                             setPatient('')
                             setOwner('')
@@ -207,6 +207,9 @@ const styles = StyleSheet.create({
         marginTop: 30,
         color: '#FFF'
     },
+    tituloBold: {
+        fontWeight: '800'
+    },
     btnCancelar: {
         marginTop: 20,
         backgroundColor: '#5D1A83',
@@ -221,9 +224,6 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         fontSize: 17,
         textTransform: 'uppercase'
-    },
-    tituloBold: {
-        fontWeight: '800'
     },
     campo: {
         marginTop: 5,

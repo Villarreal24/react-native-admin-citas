@@ -1,43 +1,50 @@
 import React from 'react'
 import { Text, View, StyleSheet, Pressable } from 'react-native'
+import { formatDate } from '../helpers/index'
 
-const Patient = ({ item, setModalVisible, patientEdit }) => {
+const Patient = ({
+    item,
+    setModalVisible,
+    setPatient,
+    patientEdit,
+    patientDelete,
+    setModalPatient }) => {
     const { patient, date, id } = item
 
-    const formatDate = date => {
-        const newDate = new Date(date)
-        const options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }
-
-        return newDate.toLocaleDateString('es-ES', options)
-    }
+    
 
     return (
-        <View style={styles.content}>
-            <Text style={styles.label}>Paciente:</Text>
-            <Text style={styles.text}>{patient}</Text>
-            <Text style={styles.date}>{formatDate(date)}</Text>
+        <Pressable
+            onPress={() => {
+                setModalPatient(true)
+                setPatient(item)
+            }}
+        >
+            <View style={styles.content}>
+                <Text style={styles.label}>Paciente:</Text>
+                <Text style={styles.text}>{patient}</Text>
+                <Text style={styles.date}>{formatDate(date)}</Text>
 
-            <View style={styles.contentButtons}>
-                <Pressable
-                    style={[styles.btn, styles.btnEdit]}
-                    onLongPress={() => {
-                        setModalVisible(true)
-                        patientEdit(id)
-                    }}
-                >
-                    <Text style={styles.btnText}>Editar</Text>
-                </Pressable>
+                <View style={styles.contentButtons}>
+                    <Pressable
+                        style={[styles.btn, styles.btnEdit]}
+                        onLongPress={() => {
+                            setModalVisible(true)
+                            patientEdit(id)
+                        }}
+                    >
+                        <Text style={styles.btnText}>Editar</Text>
+                    </Pressable>
 
-                <Pressable style={[styles.btn, styles.btnDelete]}>
-                    <Text style={styles.btnText}>Eliminar</Text>
-                </Pressable>
+                    <Pressable
+                        style={[styles.btn, styles.btnDelete]}
+                        onLongPress={() => patientDelete(id)}
+                    >
+                        <Text style={styles.btnText}>Eliminar</Text>
+                    </Pressable>
+                </View>
             </View>
-        </View>
+        </Pressable>
     )
 }
 
@@ -46,7 +53,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         padding: 20,
         borderBottomColor: '#94A3B8',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        borderRadius: 10,
     },
     label: {
         label: '#374151',
